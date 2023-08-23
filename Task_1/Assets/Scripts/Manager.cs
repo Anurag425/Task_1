@@ -5,11 +5,13 @@ using System.IO;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using TMPro;
-using Unity.VisualScripting;
+using DG.Tweening;
+using System.Collections;
 
 public class Manager : MonoBehaviour
 {
     public static Manager instance;
+
 
     [Serializable]
     public class Client
@@ -56,6 +58,7 @@ public class Manager : MonoBehaviour
     public TextMeshProUGUI popupName;
     public TextMeshProUGUI popupPoints;
     public TextMeshProUGUI popupAddress;
+    
 
     void Awake()
     {
@@ -75,11 +78,6 @@ public class Manager : MonoBehaviour
         }
 
     }
-   
-    //public ClientInfo getClientInfo(int id)
-    //{
-    //    return clientdata.data[id];
-    //}
 
     public void OnValueChanged(int idx)
     {
@@ -128,10 +126,20 @@ public class Manager : MonoBehaviour
         popupPoints.text = clientdata.data[id].points.ToString();
         popupAddress.text = clientdata.data[id].address;
         popupWindow.SetActive(true);
+        popupWindow.transform.DOScale(Vector3.one, 0.2f)
+            .SetEase(Ease.Linear);
     }
 
     public void CloseClientInfoPopup()
     {
+        StartCoroutine("PopupClose");
+    }
+
+    private IEnumerator PopupClose()
+    {
+        popupWindow.transform.DOScale(Vector3.zero, 0.2f)
+            .SetEase(Ease.Linear);
+        yield return new WaitForSeconds(0.2f);
         popupWindow.SetActive(false);
     }
 }
